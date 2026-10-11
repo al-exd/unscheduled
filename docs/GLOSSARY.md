@@ -20,16 +20,10 @@ The NIST database that republishes CVEs and adds structured data to them: affect
 The processing state the NVD assigns to a CVE: `Received`, `Awaiting Analysis`, `Undergoing Analysis`, `Analyzed`, `Modified`, `Deferred`, or `Rejected`.
 
 **KEV (Known Exploited Vulnerabilities)**
-The CISA catalog of CVEs known to be exploited in the wild.
-
-**OSV (Open Source Vulnerabilities)**
-A database of vulnerabilities in open-source packages, with affected package versions. Many of its entries map to CVEs.
-
-**EPSS (Exploit Prediction Scoring System)**
-A daily estimate of the probability that a CVE will be exploited in the next 30 days.
+The CISA catalog of CVEs known to be exploited in the wild. The NVD flags the CVEs listed in it, which is how the project learns about known exploitation.
 
 **CVSS (Common Vulnerability Scoring System)**
-A standard for scoring the severity of a vulnerability from 0.0 to 10.0. Several versions exist, and different sources may give different scores for the same CVE.
+A standard for scoring the severity of a vulnerability from 0.0 to 10.0. Several versions exist, and different providers may give different scores for the same CVE.
 
 **CPE (Common Platform Enumeration)**
 A standard name for a product, for example `cpe:2.3:a:apache:http_server:2.4.58:*:*:*:*:*:*:*`.
@@ -43,31 +37,28 @@ A URL attached to a CVE, such as a vendor advisory, a patch, or a bug report. Re
 ## Domain terms
 
 **Source**
-A public database the project imports CVE data from. Each source has its own format, update rhythm and coverage.
+The public database the project imports CVE data from. The NVD is the only source.
 
 **Raw record**
-The data exactly as a source published it. It is kept so that the cleaned data can always be rebuilt.
+The CVE data exactly as the NVD published it. It is kept so that the cleaned data can always be rebuilt.
 
-**Consolidated record**
-The single view of a CVE built from the raw records of every source that knows it.
+**Provider**
+Who supplied a piece of data inside an NVD record: the NVD itself or a CNA. A record can carry several severity scores, one per provider.
 
 **Provenance**
-The source a piece of data came from. Every field of a consolidated record keeps its provenance.
+The provider a piece of data came from. Every field keeps its provenance.
 
-**Disagreement**
-Two sources giving different values for the same field of the same CVE, for example two different severity scores.
-
-**Coverage**
-The share of CVEs a source knows about, and how complete its data is for them.
+**Completeness**
+How much of the expected structured data (severity, weakness type, affected products) a CVE has.
 
 **Analyzed CVE**
-A CVE that has received structured data (affected products, weakness type, severity) from an analyzing source such as the NVD.
+A CVE that has received structured data (affected products, weakness type, severity) from the NVD.
 
 **Unanalyzed CVE**
 A CVE without that structured data.
 
 **Analysis delay**
-The time between a CVE's publication and its analysis by a given source.
+The time between a CVE's publication and its analysis by the NVD.
 
 **Rejected CVE**
 A CVE ID withdrawn by the CVE Program. It stays in the data, marked as rejected.
@@ -85,10 +76,10 @@ The kind of flaw behind a CVE, expressed as a CWE.
 How serious a CVE is, expressed as a CVSS score and its level (low, medium, high, critical).
 
 **Known exploitation**
-Whether a CVE is listed as exploited in the wild, for example in the KEV catalog.
+Whether a CVE is listed as exploited in the wild in the KEV catalog, as flagged by the NVD.
 
 **Filter**
-A condition that selects a subset of CVEs, such as a date range, a severity level or a source.
+A condition that selects a subset of CVEs, such as a date range, a severity level or an NVD status.
 
 **Statistic**
 A measure computed over a set of CVEs, with an exact and documented definition, for example "share of CVEs published this month that are unanalyzed".
@@ -99,10 +90,7 @@ A measure computed over a set of CVEs, with an exact and documented definition, 
 A CVE not known before has been stored by ingestion.
 
 **CVE updated**
-A source has published a change to a CVE already stored.
-
-**Sources disagree**
-Consolidation has found a disagreement between two sources on the same CVE.
+The NVD has published a change to a CVE already stored.
 
 ## Later phase: AI suggestions
 
@@ -116,5 +104,5 @@ Measuring AI suggestions against CVEs that already have official data, without s
 
 - Which NVD statuses count as *analyzed*? `Modified` CVEs have usually been analyzed before. `Deferred` CVEs will likely never be analyzed.
 - Does structured data provided by a CNA count as analysis?
-- When sources disagree, does the consolidated record pick a preferred value, or only show every value?
-- Which sources are part of the MVP, and in which order are they added?
+- When providers give different severity scores for the same CVE, which one does the project display and use in statistics, or does it show all of them?
+- Is the "provider" concept part of the domain model, or only kept in the raw record?
